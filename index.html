@@ -110,7 +110,6 @@
 
     <!-- ページやその周辺のユーザーインターフェイスに指定したカラーを適用 -->
     <meta name="theme-color" content="#FF00FF" />
-
   </head>
 
   <body>
@@ -128,18 +127,10 @@
 
     <!-- ページのメインとなるコンテンツエリア． -->
     <main>
-      <h1 class="title">
-        <span>K</span>
-        <span>e</span>
-        <span>i</span>
-        <span>t</span>
-        <span>a</span>
-        <span>r</span>
-        <span>o</span>
-        <span>o</span>
-        <span>O</span>
-        <span>O</span>
-      </h1>
+      <h1 class="title">KeitarooOO</h1>
+
+      <canvas id="glcanvas" width="640" height="480"></canvas>
+
       <h1>About</h1>
       <p>🌱I’m currently learning mechanical engineering.</p>
       <p>💻 I'm interested in electrical engineering and computer science.</p>
@@ -182,14 +173,18 @@
     <!-- nomoduleを設定することでmoduleをサポートしていないブラウザを対象にJavaScriptを提供する． -->
     <!-- <script src="assets/js/xy-polyfill.js" nomodule></script> -->
 
+    <!-- 行列演算ライブラリを導入 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"
+            integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ=="
+            crossorigin="anonymous" defer>
+    </script>
+
     <!-- type="module"のJavaScriptは，moduleをサポートするブラウザでのみ実行される -->
     <!--- defer属性を指定すると，HTMLの解析と，スクリプトの読み込みを非同期に並行して行うが，スクリプトの実行は，HTMLの解析が完了した後で行われる
     <!-- type属性は省略するとtext/javascriptになる -->
     <!-- <script src="assets/js/script.js" type="module"></script> -->
     <!-- CORSエラーを回避 -->
-    <script src="assets/js/script.js" type="text/javascript" defer></script>
-    <!-- jQueryライブラリを読み込む-->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="assets/js/script.js" defer></script>
 
     <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
     <script>
