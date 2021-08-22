@@ -1,3 +1,5 @@
+let squareRotation = 0.0;
+
 main();
 
 //
@@ -6,6 +8,7 @@ main();
 function main() {
   // HTMLからcanvas要素を取得
   const canvas = document.querySelector("#glcanvas");
+  // 動的にcanvasサイズを変更
   canvas.width = 300;
   canvas.height = 300;
   // canvasからWebGLコンテキストの取得
@@ -22,18 +25,26 @@ function main() {
 
   const vsSource = `
     attribute vec4 aVertexPosition;
+    attribute vec4 aVertexColor;
+
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
+
+    varying lowp vec4 vColor;
+
     void main() {
       gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+      vColor = aVertexColor;
     }
   `;
 
   // Fragment shader program
   // 白で塗りつぶす，RGBA
   const fsSource = `
+    varying lowp vec4 vColor;
+
     void main() {
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      gl_FragColor = vColor;
     }
   `;
 
@@ -43,12 +54,13 @@ function main() {
 
   // Collect all the info needed to use the shader program.
   // Look up which attribute our shader program is using
-  // for aVertexPosition and look up uniform locations.
+  // for aVertexPosition, aVertexColor and also look up uniform locations.
   const programInfo = {
     program: shaderProgram,
     attribLocations: {
       // 何番目のattribute変数なのかというインデックスが得られる
       vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+      vertexColor: gl.getAttribLocation(shaderProgram, "aVertexColor"),
     },
     uniformLocations: {
       // 何番目のuniform変数なのかというインデックスが得られる
@@ -61,8 +73,19 @@ function main() {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
-  // Draw the scene
-  drawScene(gl, programInfo, buffers);
+  let then = 0;
+
+  // Draw the scene repeatedly
+  function render(now) {
+    now *= 0.001; // convert to seconds
+    const deltaTime = now - then;
+    then = now;
+
+    drawScene(gl, programInfo, buffers, deltaTime);
+
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
 }
 
 //
@@ -75,15 +98,35 @@ function initBuffers(gl) {
   // Create a buffer for the square's positions.
 
   const positionBuffer = gl.createBuffer();
+  const colorBuffer = gl.createBuffer();
+
+  // Now create an array of positions for the square.
+  const positions = [
+    // 1
+    1.0, 1.0,
+    // 2
+    -1.0, 1.0,
+    // 3
+    1.0, -1.0,
+    // 4
+    -1.0, -1.0,
+  ];
+
+  const colors = [
+    // white
+    1.0, 1.0, 1.0, 1.0,
+    // red
+    1.0, 0.0, 0.0, 1.0,
+    // green
+    0.0, 1.0, 0.0, 1.0,
+    // blue
+    0.0, 0.0, 1.0, 1.0,
+  ];
 
   // Select the positionBuffer as the one to apply buffer
   // operations to from here out.
   // バッファをWebGLにバインドする，第一引数はバッファの種類を表す定数
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  // Now create an array of positions for the square.
-
-  const positions = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
 
   // Now pass the list of positions into WebGL to build the
   // shape. We do this by creating a Float32Array from the
@@ -96,23 +139,24 @@ function initBuffers(gl) {
   // WebGLにバインドできるバッファは1度に1つだけであるため，エラーが発生しないように以下の処理を行っている
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
   return {
     position: positionBuffer,
+    color: colorBuffer,
   };
 }
 
 //
 // Draw the scene.
 //
-function drawScene(gl, programInfo, buffers) {
-  // Clear to black, fully opaque
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  // Clear everything
-  gl.clearDepth(1.0);
-  // Enable depth testing
-  gl.enable(gl.DEPTH_TEST);
-  // Near things obscure far things
-  gl.depthFunc(gl.LEQUAL);
+function drawScene(gl, programInfo, buffers, deltaTime) {
+  gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+  gl.clearDepth(1.0); // Clear everything
+  gl.enable(gl.DEPTH_TEST); // Enable depth testing
+  gl.depthFunc(gl.LEQUAL); // Near things obscure far things
 
   // Clear the canvas before we start drawing on it.
 
@@ -125,7 +169,7 @@ function drawScene(gl, programInfo, buffers) {
   // and we only want to see objects between 0.1 units
   // and 100 units away from the camera.
 
-  const fieldOfView = (45 * Math.PI) / 180; // in radians
+  const fieldOfView = 45 * (Math.PI / 180); // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   const zNear = 0.1;
   const zFar = 100.0;
@@ -148,6 +192,13 @@ function drawScene(gl, programInfo, buffers) {
     [-0.0, 0.0, -6.0]
   ); // amount to translate
 
+  mat4.rotate(
+    modelViewMatrix, // destination matrix
+    modelViewMatrix, // matrix to rotate
+    squareRotation, // amount to rotate in radians
+    [0, 0, 1]
+  ); // axis to rotate around
+
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
   {
@@ -163,6 +214,21 @@ function drawScene(gl, programInfo, buffers) {
     gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
     // attribute属性を登録する
     gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, numComponents, type, normalize, stride, offset);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  }
+
+  // Tell WebGL how to pull out the colors from the color buffer
+  // into the vertexColor attribute.
+  {
+    const numComponents = 4;
+    const type = gl.FLOAT;
+    const normalize = false;
+    const stride = 0;
+    const offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+    gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
+    gl.vertexAttribPointer(programInfo.attribLocations.vertexColor, numComponents, type, normalize, stride, offset);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 
   // Tell WebGL to use our program when drawing
@@ -182,6 +248,8 @@ function drawScene(gl, programInfo, buffers) {
     // コンテキストの再描画
     gl.flush();
   }
+
+  squareRotation += deltaTime;
 }
 
 //
