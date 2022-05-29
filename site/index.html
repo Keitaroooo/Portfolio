@@ -1,0 +1,202 @@
+<!-- DOCTYPE宣言-->
+<!DOCTYPE html>
+<!-- html要素に適用され，ページの自然言語を定義する -->
+<!-- no-jsのクラスは，JavaScriptをサポートしていないブラウザで特定のコンポーネントにスタイルを適用する場合に備えたもの．
+  JavaScriptをサポートし実行するブラウザでは無視される． -->
+<html lang="ja" class="no-js">
+  <head>
+    <!-- 基本設定 -->
+
+    <!-- ドキュメントの文字エンコードを宣言 -->
+    <!-- ページタイトルの文字化けを避けるために，<title>より上に記述する必要がある -->
+    <!-- 英語版のブラウザでアクセスした場合などに文字化けが起きることがある -->
+    <meta charset="UTF-8" />
+    <!-- ビューポイントの幅を変更できる． -->
+    <!-- width=device-widthはビューポートの幅をスクリーンの幅に設定する． -->
+    <!-- initial-scaleは，ページが最初に読み込まれたときのズームレベルを制御する -->
+    <!-- ドキュメントが適切にレンダリングされるように，できるだけ上の方に記述する -->
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- ページを読み込む際の早い段階で特定のリソースを確実に利用できるようにする -->
+    <!-- <link rel="preload" href="font.woff2" as="font" type="font/woff2" /> -->
+    <!-- 電話番号の自動検出とフォーマットを無効にする．自動的にリンク扱いされるのを防ぐ -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ブラウザの互換性指定，プラウザがサポートする範囲で最も上位互換のモードで表示する，これらの機能はEdgeではサポートされていない -->
+    <!-- 今後は必要なくなるらしい -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- ページに関する情報 -->
+
+    <!-- ページのタイトルは，サイト内でそのページだけ唯一のものを使用する． -->
+    <!-- ブラウザのタブ，検索エンジンの結果，ブックマークして保存したときなどに表示される． -->
+    <title>KeitarooOO</title>
+    <!-- ページの説明を記述する．検索結果に表示される．（検索結果の表示が必ずこの内容になるとは限らない） -->
+    <!-- ここで指定する値はGoogleの検索結果に表示されるなど，多くの検索エンジンで利用される -->
+    <meta name="description" content="KeitarooOO's portfolio site" />
+    <!-- ページを制作した製作者の名前． -->
+    <meta name="author" content="KeitarooOO" />
+
+    <!-- ソーシャルメディア用の設定 -->
+
+    <!-- <title>と同様に，ページのユニークなタイトルを記述する． -->
+    <!-- Twitterなどのソーシャルメディアがシェアする際に利用する． -->
+    <meta property="og:title" content="Keitarooo" />
+    <!-- ユニークな説明文を記述．ソーシャルメディアのURLスクレーパーによって使用される． -->
+    <meta property="og:description" content="KeitarooOO's portfolio site" />
+    <!-- ソーシャルメディアなど，URLが取得されて共有する際に表示される画像 -->
+    <meta property="og:image" content="icon.svg" />
+    <!-- 画像の説明文を記述する．意味のある画像に使用する． -->
+    <!-- altを省略した場合，スクリーンリーダーは画像を無視する． -->
+    <meta property="og:image:alt" content="KeitarooOO's icon" />
+    <!-- ページで使用する言語を定義する，記述が推奨されている -->
+    <meta property="og:locale" content="ja_JP" />
+    <!-- コンテンツの種類を記述する．必須のプロパティ -->
+    <meta property="og:type" content="website" />
+    <!-- Twitterで共有したときのレイアウトを指定する -->
+    <!-- webサイトにはsummaryとsummary_large_imageの2つのオプションがある． -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- ページの正規URLを記述する．OpenGraphページに必須のプロパティ -->
+    <meta property="og:url" content="https://keitaroooo.com" />
+
+    <!-- サイトのRSS Feedを定義する -->
+    <!-- <link type="application/atom+xml" rel="alternate" href="feed.xml" title="KeitarooOO" /> -->
+    <!-- Twitterがパーソナライズの目的でサイトの情報を使用することを禁止する -->
+    <meta name="twitter:dnt" content="on" />
+    <!-- OGP設定．Facebook App ID． -->
+    <meta property="fb:app_id" content="Facebook App ID" />
+    <!-- OGP設定．サイトのタイトル． -->
+    <meta property="og:site_name" content="KeitarooOO" />
+    <!-- ページのツイッターアカウントを@ありで指定． -->
+    <meta name="twitter:site" content="@keitaroudon" />
+    <!-- ページコンテンツ製作者のツイッターアカウントを@ありで指定． -->
+    <meta name="twitter:creator" content="@keitaroudon" />
+
+    <!-- 複数のURLで公開されているページのオリジナルソースを指定することで，コンテンツの重複によるSEOの問題を防ぐことができる -->
+    <link rel="canonical" href="https://keitaroooo.com" />
+
+    <!-- アイコン -->
+
+    <!-- 従来のブラウザ用の32×32pxのファビコン -->
+    <!-- <link rel="icon" href="favicon.ico" /> -->
+    <!-- svgファビコンを設定する -->
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+    <!-- 　Appleデバイスのホーム画面に表示される180×180pxのアイコン -->
+    <link rel="apple-touch-icon" href="images/icon.svg" />
+    <!-- Androidデバイスの場合，webmanifestファイルが必要で，
+      このファイルは，ホーム画面とPWAのスプラッシュ画面に必要なアイコンが配置されている情報をブラウザに提供する． -->
+    <link rel="manifest" href="site.webmanifest" />
+
+    <!-- スタイル -->
+
+    <!-- JavaScript moduleはプログレッシブエンハンスメントで，
+       これをサポートしている（=モダンJavaScriptをサポートしている）ブラウザにのみ，JavaScriptを提供する． -->
+    <!-- JavaScriptがアクティブなときにコンポーネントのスタイルが異なる場合は，CSSでjsクラスを使用する． -->
+    <!-- <script type="module">
+      document.documentElement.classList.remove("no-js");
+      document.documentElement.classList.add("js");
+    </script> -->
+
+    <!-- type属性の一般的な使用法は，参照されるスタイルシートのタイプ (text/css など) の定義だが，
+  CSS はウェブ上の唯一のスタイルシート言語であるため， type 属性を省略でき，それが実際に推奨される習慣になっている -->
+    <!-- リセット用CSS -->
+    <link rel="stylesheet" href="styles/normalize.css" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- サイトで共通に使用するCSS -->
+    <link rel="stylesheet" href="styles/style.css" />
+    <!-- 印刷用のCSS -->
+    <!-- <link rel="stylesheet" href="assets/css/print.css" media="print" /> -->
+
+    <!-- ページやその周辺のユーザーインターフェイスに指定したカラーを適用 -->
+    <meta name="theme-color" content="#FF00FF" />
+  </head>
+
+  <body>
+    <!-- コンテンツ -->
+
+    <!-- ページ上部のヘッダーエリア． -->
+    <header class="header">
+      <!-- header -->
+    </header>
+
+    <!-- グローバルナビゲーション．いわゆるメニューエリア． -->
+    <nav class="gnav">
+      <!-- gnav -->
+    </nav>
+
+    <!-- ページのメインとなるコンテンツエリア． -->
+    <main>
+      <h1 class="title">KeitarooOO</h1>
+
+      <canvas id="glcanvas" width="640" height="480"></canvas>
+
+      <video id="video">HTML5 <code>&lt;video&gt;</code> 要素をサポートしていません</video>
+
+      <h1>About</h1>
+      <p>🌱I’m currently learning mechanical engineering.</p>
+      <p>💻 I'm interested in electrical engineering and computer science.</p>
+      <h1>Interests</h1>
+      <ul>
+        <li>Comedy</li>
+        <li>Sports</li>
+        <li>Trip</li>
+        <li>Creating</li>
+      </ul>
+      <h1>Background</h1>
+      <h2>2020.4&ndash;</h2>
+      <p>Nishikawa Laboratory, Graduate School of Engineering Science, Osaka University</p>
+      <h2>2018.4&ndash;2020.3</h2>
+      <p>School of Engineering Science, Osaka University</p>
+      <h2>2013.4&ndash;2018.3</h2>
+      <p>National Institute of Technology, Akashi College</p>
+      <h1>Skills</h1>
+      <ul>
+        <li>3D CAD</li>
+        <li>C/C++</li>
+        <li>R</li>
+        <li>Python</li>
+        <li>HTML, JavaScript, CSS</li>
+        <li>React</li>
+        <li>Ruby</li>
+        <li>Docker</li>
+      </ul>
+      <h1>Works</h1>
+      <p><a href="https://techblog.keitaroooo.com" target="_blank" rel="noopener">Tech Blog</a></p>
+      <p><a href="https://blog.keitaroooo.com" target="_blank" rel="noopener">Blog</a></p>
+      <p><a href="https://play.google.com/store/apps/details?id=com.Keitarooo.maze&hl=ja" target="_blank" rel="noopener">Huge Maze</a></p>
+    </main>
+
+    <!-- ページ下部のフッターエリア． -->
+    <footer class="footer">
+      <!-- footer -->
+    </footer>
+
+    <!-- nomoduleを設定することでmoduleをサポートしていないブラウザを対象にJavaScriptを提供する． -->
+    <!-- <script src="assets/js/xy-polyfill.js" nomodule></script> -->
+
+    <!-- 行列演算ライブラリを導入 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ==" crossorigin="anonymous" defer></script>
+
+    <!-- type="module"のJavaScriptは，moduleをサポートするブラウザでのみ実行される -->
+    <!--- defer属性を指定すると，HTMLの解析と，スクリプトの読み込みを非同期に並行して行うが，スクリプトの実行は，HTMLの解析が完了した後で行われる
+    <!-- type属性は省略するとtext/javascriptになる -->
+    <!-- <script src="assets/js/script.js" type="module"></script> -->
+    <!-- CORSエラーを回避 -->
+    <script src="scripts/script.js" defer></script>
+
+    <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
+    <script>
+      window.ga = function () {
+        ga.q.push(arguments);
+      };
+      ga.q = [];
+      ga.l = +new Date();
+      ga("create", "UA-XXXXX-Y", "auto");
+      ga("set", "anonymizeIp", true);
+      ga("set", "transport", "beacon");
+      ga("send", "pageview");
+    </script>
+    <script src="https://www.google-analytics.com/analytics.js" async></script>
+  </body>
+</html>

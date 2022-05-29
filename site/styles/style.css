@@ -1,0 +1,26 @@
+body {
+  /* body要素の内部要素の表示種別を指定する */
+  /* 内部要素はブロック要素のように動作しつつ，そのコンテンツをフレックスボックスモデルに従ってレイアウトする */
+  display: flex;
+  /* body要素のコンテンツ領域の高さをビューポート高さの100%にする */
+  /* height: 100vh; */
+  /* フレックスコンテナーの主軸に沿って，中身のアイテムの間や周囲に間隔を配置する方法を定義する */
+  /* アイテムを中央に寄せる */
+  justify-content: center;
+  /* フレックスボックスでは交差軸方向のアイテムの配置を制御する */
+  /* アイテムを中央付近にまとめる */
+  align-items: center;
+  /* 縦並びにする */
+  flex-flow: column;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+}
+
+video {
+  display: none;
+}
