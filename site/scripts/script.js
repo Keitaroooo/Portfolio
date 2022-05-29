@@ -1,4 +1,6 @@
 let cubeRotation = 0.0;
+// will set to true when video can be copied to texture
+let copyVideo = false;
 
 main();
 
@@ -107,7 +109,11 @@ function main() {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
-  const texture = loadTexture(gl, "../images/cubetexture.png");
+  const url = "../images/Firefox.mp4";
+
+  const texture = initTexture(gl, url);
+
+  const video = setupVideo(url);
 
   let then = 0;
 
@@ -117,11 +123,58 @@ function main() {
     const deltaTime = now - then;
     then = now;
 
+    if (copyVideo) {
+      updateTexture(gl, texture, video);
+    }
+
     drawScene(gl, programInfo, buffers, texture, deltaTime);
 
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
+}
+
+function setupVideo(url) {
+  const video = document.querySelector("#video");
+
+  let playing = false;
+  let timeupdate = false;
+
+  video.autoplay = true;
+  video.muted = true;
+  video.loop = true;
+
+  // Waiting for these 2 events ensures
+  // there is data in the video
+
+  video.addEventListener(
+    "playing",
+    () => {
+      playing = true;
+      checkReady();
+    },
+    true
+  );
+
+  video.addEventListener(
+    "timeupdate",
+    () => {
+      timeupdate = true;
+      checkReady();
+    },
+    true
+  );
+
+  video.src = url;
+  video.play();
+
+  function checkReady() {
+    if (playing && timeupdate) {
+      copyVideo = true;
+    }
+  }
+
+  return video;
 }
 
 //
@@ -292,7 +345,7 @@ function initBuffers(gl) {
 // Initialize a texture and load an image.
 // When the image finished loading copy it into the texture.
 //
-function loadTexture(gl, url) {
+function initTexture(gl, url) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -311,28 +364,46 @@ function loadTexture(gl, url) {
   const pixel = new Uint8Array([0, 0, 255, 255]); // opaque blue
   gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
 
-  const image = new Image();
-  image.onload = () => {
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
+  if (!/.mp4/.test(url)) {
+    const image = new Image();
+    image.onload = () => {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image);
 
-    // WebGL1 has different requirements for power of 2 images
-    // vs non power of 2 images so check if the image is a
-    // power of 2 in both dimensions.
-    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-      // Yes, it's a power of 2. Generate mips.
-      gl.generateMipmap(gl.TEXTURE_2D);
-    } else {
-      // No, it's not a power of 2. Turn of mips and set
-      // wrapping to clamp to edge
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    }
-  };
-  image.src = url;
+      // WebGL1 has different requirements for power of 2 images
+      // vs non power of 2 images so check if the image is a
+      // power of 2 in both dimensions.
+      if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+        // Yes, it's a power of 2. Generate mips.
+        gl.generateMipmap(gl.TEXTURE_2D);
+      } else {
+        // No, it's not a power of 2. Turn of mips and set
+        // wrapping to clamp to edge
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      }
+    };
+    image.src = url;
+  } else {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  }
 
   return texture;
+}
+
+//
+// copy the video texture
+//
+function updateTexture(gl, texture, video) {
+  const level = 0;
+  const internalFormat = gl.RGBA;
+  const srcFormat = gl.RGBA;
+  const srcType = gl.UNSIGNED_BYTE;
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, video);
 }
 
 function isPowerOf2(value) {
